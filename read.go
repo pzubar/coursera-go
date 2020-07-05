@@ -12,26 +12,47 @@ type Name struct {
 	lname string
 }
 
-func main() {
+func getNamesFromFile(file *os.File) []Name {
 	var names []Name
-	file, err := os.Open("test")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		words := strings.Fields(scanner.Text())
-		fmt.Println(words, len(words))
-		names = append(names,
-			Name{
-				words[0], words[1],
-			})
-	}
+	var scanner = bufio.NewScanner(file)
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
+	} else {
+		for scanner.Scan() {
+			words := strings.Split(scanner.Text(), " ")
+
+			if len(words) == 2 {
+				names = append(names, Name{words[0], words[1]})
+			} else {
+				fmt.Println("Wrong format of string!")
+			}
+		}
 	}
-	fmt.Println(names)
-	file.Close()
+
+	return names
+}
+
+func main() {
+	var names []Name
+	var filename string
+
+	fmt.Println("Please, provide a filename")
+	_, err := fmt.Scan(&filename)
+	file, readError := os.Open(filename)
+
+	if err != nil || readError != nil {
+		fmt.Println("An error occurred!")
+		return
+	}
+
+	names = getNamesFromFile(file)
+	for _, fullName := range names {
+		fmt.Printf("%s %s\n", fullName.fname, fullName.lname)
+	}
+
+	closingError := file.Close()
+	if closingError != nil {
+		fmt.Println("An error occurred while closing the file")
+	}
 }
