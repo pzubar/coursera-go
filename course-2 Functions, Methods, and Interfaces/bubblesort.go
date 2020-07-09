@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func Swap(sli []int, index int) {
 	var tmp = sli[index]
@@ -11,8 +14,8 @@ func Swap(sli []int, index int) {
 
 func BubbleSort(sli []int) {
 	for index := range sli {
-		for i := index; i < len(sli); i++ {
-			if i != len(sli)-1 && sli[i] > sli[i+1] {
+		for i := 0; i < len(sli)-index-1; i++ {
+			if sli[i] > sli[i+1] {
 				Swap(sli, i)
 			}
 		}
@@ -20,8 +23,18 @@ func BubbleSort(sli []int) {
 }
 
 func main() {
-	var test = []int{30, 2, -2, 35, 199, 0}
+	var slice = make([]int, 0, 10)
+	var userInput string
 
-	BubbleSort(test)
-	fmt.Println(test)
+	fmt.Println("Please, enter up to 10 integers (or press 'X' to sort an array immediately)")
+	for len(slice) <= 10 {
+		fmt.Scan(&userInput)
+		if userInput == "X" {
+			break
+		} else if s, err := strconv.Atoi(userInput); err == nil {
+			slice = append(slice, s)
+		}
+	}
+	BubbleSort(slice)
+	fmt.Println(slice)
 }
